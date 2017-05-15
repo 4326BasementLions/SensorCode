@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 /**
- * {@link SensorMRRangeSensor} illustrates how to use the Modern Robotics
+ * { illustrates how to use the Modern Robotics
  * Range Sensor.
  *
  * The op mode assumes that the range sensor is configured with a name of "sensor_range".
@@ -30,17 +30,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * @see <a href="http://modernroboticsinc.com/range-sensor">MR Range Sensor</a>
  */
 @Autonomous(name = "Sensor: MR range sensor", group = "Sensor")
-@Disabled   // comment out or remove this line to enable this opmode
-public class SensorMRRangeSensor extends LinearOpMode {
+//@Disabled   // comment out or remove this line to enable this opmode
+public class Range extends LinearOpMode {
 
     ModernRoboticsI2cRangeSensor rangeSensor;
-    
+
     DcMotor leftBack;
     DcMotor leftFront;
     DcMotor rightFront;
     DcMotor rightBack;
-    
-    
+
+
     @Override public void runOpMode() {
 
         // get a reference to our compass
@@ -50,38 +50,35 @@ public class SensorMRRangeSensor extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            telemetry.addData("raw ultrasonic", rangeSensor.rawUltrasonic());
-            telemetry.addData("raw optical", rangeSensor.rawOptical());
-            telemetry.addData("cm optical", "%.2f cm", rangeSensor.cmOptical());
+            telemetry.addData("raw ultrasonic", rangeSensor.rawUltrasonic()); //Measures distance when far away, higher number is father away
+            telemetry.addData("raw optical", rangeSensor.rawOptical()); //Measures distance when closer; higher number when closer
+            telemetry.addData("c optical", "%.2f cm", rangeSensor.cmOptical());
             telemetry.addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
-            leftFront = hardwareMap.dcMotor.get("leftFront");
-            leftBack = hardwareMap.dcMotor.get("leftBack");
-            rightFront = hardwareMap.dcMotor.get("rightFront");
-            rightBack = hardwareMap.dcMotor.get("rightBack");
-
-            leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             telemetry.update();
+            leftFront = hardwareMap.dcMotor.get("leftFront");
+            int x = 0;
+         while(x < 7) {
+             Sense();
+             x++;
+         }
+        }}
+
+
+    public void MoveForward(int one){
+        leftFront.setPower(one);
+
+
+    }
+    public void Sense(){
+        if(rangeSensor.rawUltrasonic()>20){
+            MoveForward(10);
         }
-        public void MoveForward(int one, int two, int three, int four){
-            leftFront.setPower(one);
-            rightFront.setPower(two);
-            leftback.setPower(three);
-            rightback.setPower(four);
+        if(rangeSensor.rawUltrasonic()<20&&rangeSensor.rawUltrasonic()>5){
+            MoveForward(5);
         }
-        public void Sense{
-          if(rangeSensor.rawUltrasonic()>20){
-            MoveForward(10, 10, 10, 10);
-          }
-          if(rangeSensor.rawUltrasonic()<20&&rangeSensor.rawUltrasonic()>5){
-            MoveForward(5, 5, 5, 5);
-          }
-          if(rangeSensor.rawOptical()<=5){
-            MoveForward(0, 0, 0, 0);
-          }
+        if(rangeSensor.rawOptical()<=5){
+            MoveForward(0);
         }
     }
-    
 }
+
